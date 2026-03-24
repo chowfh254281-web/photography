@@ -11,10 +11,9 @@ export default function VideoPage() {
   const observerRef = useRef<IntersectionObserver | null>(null);
 
   // Video Data 
-  // 🟢 將 Shiseido 影片 (nZvCxgonaKM) 調到上第一條
+  // 🟢 移除了 Shiseido (nZvCxgonaKM) 影片
   const videos = [
-    { id: 'nZvCxgonaKM' }, // 第 1 條：Shiseido
-    { id: '2MvFryTKJoI' }, // 原本的 Landing 影片順延至第 2 條
+    { id: '2MvFryTKJoI' }, 
     { id: '_yeHdBy8Wzs' },
     { id: 'Dc3phLpndD0' },
     { id: 'rJBpYguoROg' },
@@ -288,14 +287,19 @@ export default function VideoPage() {
         }
         .yt-watch-btn:hover { background: #fff; color: #000; border-color: #fff; }
 
-        .contact-widget { position: fixed; bottom: 30px; right: 30px; z-index: 2500; display: flex; align-items: center; background: rgba(255, 255, 255, 0.08); backdrop-filter: blur(15px); border: 1px solid rgba(255,255,255,0.15); border-radius: 50px; padding: 6px; width: auto; max-width: 52px; height: 52px; box-sizing: border-box; overflow: hidden; transition: max-width 0.6s cubic-bezier(0.22, 1, 0.36, 1), background 0.3s ease, box-shadow 0.3s ease, padding-right 0.6s ease; cursor: pointer; }
-        .contact-icon { width: 38px; height: 38px; background: #fff; color: #000; border-radius: 50%; display: flex; justify-content: center; align-items: center; flex-shrink: 0; }
-        .contact-details { opacity: 0; white-space: nowrap; margin-left: 0; display: flex; flex-direction: column; justify-content: center; gap: 4px; pointer-events: none; transition: opacity 0.3s ease 0.1s, margin-left 0.4s ease; }
-        .contact-link { color: #ccc; text-decoration: none; font-size: 13px; font-weight: 500; letter-spacing: 1px; display: flex; align-items: center; transition: color 0.3s; }
-        .contact-link:hover { color: #fff; }
-        .contact-link span.label { font-size: 9px; text-transform: uppercase; color: #666; margin-right: 10px; width: 60px; font-weight: 700; }
+        /* 對齊 Home Page 的 Contact Widget 樣式 */
+        .contact-widget { position: fixed; bottom: 30px; right: 30px; z-index: 2500; display: flex; align-items: center; background: rgba(255, 255, 255, 0.08); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px); border: 1px solid rgba(255,255,255,0.15); border-radius: 50px; padding: 6px; width: auto; max-width: 52px; height: 52px; box-sizing: border-box; overflow: hidden; transition: max-width 0.6s cubic-bezier(0.22, 1, 0.36, 1), background 0.3s ease, box-shadow 0.3s ease, padding-right 0.6s ease; cursor: pointer; }
         .contact-widget:hover, .contact-widget.expanded { max-width: 380px; padding-right: 25px; background: rgba(255, 255, 255, 0.15); box-shadow: 0 10px 30px rgba(0,0,0,0.3); }
         .contact-widget:hover .contact-details, .contact-widget.expanded .contact-details { opacity: 1; margin-left: 15px; pointer-events: auto; }
+        
+        .contact-icon { width: 38px; height: 38px; background: #fff; color: #000; border-radius: 50%; display: flex; justify-content: center; align-items: center; flex-shrink: 0; }
+        
+        .contact-details { opacity: 0; white-space: nowrap; margin-left: 0; display: flex; flex-direction: column; justify-content: center; gap: 4px; pointer-events: none; transition: opacity 0.3s ease 0.1s, margin-left 0.4s ease; }
+        
+        .contact-link { color: #ccc; text-decoration: none; font-size: 13px; font-weight: 500; letter-spacing: 1px; display: flex; align-items: center; transition: all 0.3s; }
+        .contact-link:hover { color: #fff; text-shadow: 0 0 8px rgba(255,255,255,0.6); }
+        
+        .contact-link span.label { font-size: 9px; text-transform: uppercase; color: #F4D03F; margin-right: 10px; width: 60px; font-weight: 700; }
 
         @media (max-width: 768px) { 
             .smart-nav { flex-direction: column !important; width: 90% !important; max-width: 350px !important; }
@@ -330,13 +334,13 @@ export default function VideoPage() {
                     <div className="menu-line"></div><div className="menu-line"></div><div className="menu-line"></div>
                 </div>
             </div>
+            {/* 更新的 Navigation Links */}
             <div className="nav-links">
-              <Link href="/uiux" className="nav-item">UI/UX</Link>
-              <Link href="/graphic" className="nav-item">Graphic</Link>
-              <Link href="/3d" className="nav-item">3D</Link>
-              <Link href="/photography" className="nav-item">Photography</Link>
+              <Link href="/portrait" className="nav-item">Portrait</Link>
+              <Link href="/landscape" className="nav-item">Landscape</Link>
+              <Link href="/architecture" className="nav-item">Architecture</Link>
+              <Link href="/animals" className="nav-item">Animals</Link>
               <Link href="/video" className="nav-item active">Video</Link>
-              <Link href="/ai" className="nav-item">AI Generative</Link>
             </div>
         </nav>
 
@@ -377,6 +381,7 @@ export default function VideoPage() {
             ))}
         </div>
 
+        {/* 已對齊的 Contact Widget */}
         <div className={`contact-widget ${isContactExpanded ? 'expanded' : ''}`} id="contact-bubble" onClick={toggleContact}>
             <div className="contact-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg></div>
             <div className="contact-details">

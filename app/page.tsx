@@ -170,8 +170,6 @@ export default function HomePage() {
         charSpans.forEach((span: any, i) => {
           const randomAngle = (i * 137.5) % 360;
           
-          // 🟢 已經移除咗 Math.pow 指數加速，改用純 Linear (線性) 距離計算
-          // distance 直接同 scrollY 掛鉤，碌幾多郁幾多，感覺更加平均同受控
           const distance = scrollY * 2.5; 
           
           const x = Math.cos(randomAngle * Math.PI / 180) * distance;
@@ -179,7 +177,6 @@ export default function HomePage() {
           const rotation = scrollY * (i % 2 === 0 ? 0.2 : -0.2); 
           const blur = scrollY * 0.03; 
 
-          // 直接 translate，唔再疊加加速 factor
           span.style.transform = `translate(${x}px, ${y}px) rotate(${rotation}deg)`;
           span.style.filter = `blur(${blur}px)`;
           span.style.color = colorString;
@@ -348,22 +345,22 @@ export default function HomePage() {
     });
   }
 
+  // 1. 已更新的 photography version gallery data
   const portfolioData: any = {
-    'uiux': { type: 'static', src: "/images/index_uiux.png" },
-    'graphic': { type: 'static', src: "/images/index_graphic.png" },
-    '3d': { type: 'static', src: "/images/index_3d.png" },
-    'photography': { type: 'static', src: "/images/index_photo.png" },
-    'video': { type: 'yt', id: 'oil1eYqmIXo' },
-    'ai': { type: 'local_vid', src: "/images/AI_optimized/chanel ring.mp4" }
+    'portrait': { type: 'static', src: "/images/index_portrait.jpg" },
+    'landscape': { type: 'static', src: "/images/index_landscape.jpg" },
+    'architecture': { type: 'static', src: "/images/index_architecture.jpg" },
+    'animals': { type: 'static', src: "/images/index_animals.jpg" },
+    'video': { type: 'yt', id: 'oil1eYqmIXo' } // 保留了原本的影片或你可以更換
   };
 
+  // 2. 已更新的攝影 categories
   const categories = [
-    { id: 'uiux', label: 'UI/UX' },
-    { id: 'graphic', label: 'Graphic' },
-    { id: '3d', label: '3D VISUALS' },
-    { id: 'photography', label: 'Photography' },
-    { id: 'video', label: 'Videography' },
-    { id: 'ai', label: 'AI Generative' }
+    { id: 'portrait', label: 'Portrait' },
+    { id: 'landscape', label: 'Landscape' },
+    { id: 'architecture', label: 'Architecture' },
+    { id: 'animals', label: 'Animals' },
+    { id: 'video', label: 'Video' }
   ];
 
   return (
@@ -610,13 +607,13 @@ export default function HomePage() {
                     <div className="menu-line"></div>
                 </div>
             </div>
+            {/* 更新的 Navigation Links */}
             <div className="nav-links">
-              <Link href="/uiux" className="nav-item">UI/UX</Link>
-              <Link href="/graphic" className="nav-item">Graphic</Link>
-              <Link href="/3d" className="nav-item">3D</Link>
-              <Link href="/photography" className="nav-item">Photography</Link>
+              <Link href="/portrait" className="nav-item">Portrait</Link>
+              <Link href="/landscape" className="nav-item">Landscape</Link>
+              <Link href="/architecture" className="nav-item">Architecture</Link>
+              <Link href="/animals" className="nav-item">Animals</Link>
               <Link href="/video" className="nav-item">Video</Link>
-              <Link href="/ai" className="nav-item">AI Generative</Link>
             </div>
           </nav>
 
@@ -629,7 +626,8 @@ export default function HomePage() {
           <div className="intro-section" id="intro-trigger">
             <div className="intro-text" id="intro-text-container">
               <h1 className="main-title">SAM CHOW.</h1>
-              <div className="subtitle">MultiMedia Designer &nbsp;|&nbsp; Work Portfolio</div>
+              {/* 更新的 Subtitle */}
+              <div className="subtitle">My Photography Gallery</div>
             </div>
             
             <div className="scroll-prompt" id="scroll-prompt">
