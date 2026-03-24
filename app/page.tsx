@@ -2,9 +2,34 @@
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 
+// 準備好每個分類嘅所有相片檔名陣列
+const portraitImages = ["7B8A9120-EAE1-4BD6-9DFE-90A5ABE7FD6C", "833ED149-C5DE-414A-8D4A-DFC06A7A0B59_4_5005_c", "DSC00127", "DSC00133", "DSC00338", "DSC00380", "DSC00608", "DSC00672", "DSC00709", "DSC00765", "DSC02991", "DSC02995", "DSC03011", "DSC03014", "DSC03064", "DSC03919", "DSC03982", "DSC04087", "DSC07994", "DSC09267-2", "DSC09480", "DSC09482", "DSC09492", "DSC09669"];
+const landscapeImages = ["DSC03300", "DSC04688", "DSC05456", "DSC05664", "DSC06114", "DSC07850", "DSC07975", "DSC07994", "DSC08153", "DSC08167-2", "DSC08358", "DSC08718", "DSC08748", "DSC08760", "DSC08810", "DSC08821", "DSC09972", "DSC09975", "DSC09982"];
+const architectureImages = ["DSC01436", "DSC01437", "DSC01441", "DSC03300", "DSC03382", "DSC03905", "DSC03959", "DSC04086", "DSC04087", "DSC04102", "DSC04119", "DSC04391", "DSC04662-2", "DSC05608", "DSC06114", "DSC08718", "DSC08810", "DSC08821", "DSC08823", "DSC09352", "DSC09908", "DSC09948", "DSC09958"];
+const animalImages = ["DSC00327", "DSC00362", "DSC05863", "DSC05864", "DSC09528"];
+
 export default function HomePage() {
   const [activeYt, setActiveYt] = useState<string | null>(null); 
   const [isLoading, setIsLoading] = useState(true); 
+
+  // 用 State 裝住隨機抽出嚟嘅封面路徑
+  const [randomCovers, setRandomCovers] = useState({
+    portrait: "/images/Portrait/DSC03064.jpg",
+    landscape: "/images/Landscape/DSC08821.jpg",
+    architecture: "/images/Architecture/DSC03905.jpg",
+    animals: "/images/Animals/DSC05863.jpg"
+  });
+
+  // 喺 Client Side 掛載時，隨機洗牌
+  useEffect(() => {
+    const getRandomImg = (arr: string[]) => arr[Math.floor(Math.random() * arr.length)];
+    setRandomCovers({
+      portrait: `/images/Portrait/${getRandomImg(portraitImages)}.jpg`,
+      landscape: `/images/Landscape/${getRandomImg(landscapeImages)}.jpg`,
+      architecture: `/images/Architecture/${getRandomImg(architectureImages)}.jpg`,
+      animals: `/images/Animals/${getRandomImg(animalImages)}.jpg`
+    });
+  }, []);
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -60,52 +85,12 @@ export default function HomePage() {
     const title = document.querySelector('.main-title') as HTMLElement;
     const subtitle = document.querySelector('.subtitle') as HTMLElement;
     const seamlessHero = document.getElementById('seamless-hero');
-    const imgCard = document.querySelector('.img-card') as HTMLElement;
-    const imgBg = document.querySelector('.img-bg') as HTMLElement;
     const heroOverlay = document.getElementById('hero-overlay');
     const introText = document.getElementById('intro-text-container');
     const aboutTrack = document.getElementById('about-track');
-    const revealSource = document.getElementById('text-reveal-source');
-    const detailsBlock = document.getElementById('text-details-block');
+    const overviewFixed = document.getElementById('overview-fixed');
     const contactBubble = document.getElementById('contact-bubble');
     const scrollPrompt = document.getElementById('scroll-prompt');
-    const overviewTitle = document.getElementById('overview-title');
-
-    function splitTextIntoSpans(element: HTMLElement) {
-      const childNodes = Array.from(element.childNodes);
-      element.innerHTML = '';
-      childNodes.forEach(node => {
-        if (node.nodeType === 3) {
-          const words = (node.textContent || '').split(/(\s+)/);
-          words.forEach(word => {
-            if (word.trim().length > 0) {
-              const span = document.createElement('span');
-              span.classList.add('word');
-              span.textContent = word;
-              element.appendChild(span);
-            } else {
-              element.appendChild(document.createTextNode(word));
-            }
-          });
-        } else if (node.nodeType === 1) {
-          const wrapperSpan = node.cloneNode(false) as HTMLElement;
-          const innerWords = (node.textContent || '').split(/(\s+)/);
-          innerWords.forEach(w => {
-            if (w.trim().length > 0) {
-              const wordSpan = document.createElement('span');
-              wordSpan.classList.add('word');
-              wordSpan.textContent = w;
-              wrapperSpan.appendChild(wordSpan);
-            } else {
-              wrapperSpan.appendChild(document.createTextNode(w));
-            }
-          });
-          element.appendChild(wrapperSpan);
-        }
-      });
-    }
-
-    if (revealSource) splitTextIntoSpans(revealSource);
 
     if (title && !title.classList.contains('split-done')) {
       const text = title.textContent || '';
@@ -124,14 +109,6 @@ export default function HomePage() {
        subtitle.classList.add('split-done');
     }
 
-    if (overviewTitle && !overviewTitle.classList.contains('split-done')) {
-        const text = "WORK OVERVIEW";
-        overviewTitle.innerHTML = text.split('').map(char => 
-            char === ' ' ? '<span style="display:inline">&nbsp;</span>' : `<span>${char}</span>`
-        ).join('');
-        overviewTitle.classList.add('split-done');
-    }
-
     const animateLoop = () => {
       const scrollY = window.scrollY;
       const windowHeight = window.innerHeight;
@@ -145,6 +122,7 @@ export default function HomePage() {
         navbar?.classList.remove('force-expand');
       }
 
+      // Scroll UI 只出現喺 Landing，碌落去就隱藏
       if (scrollPrompt) {
         if (scrollY > 50) scrollPrompt.classList.add('hide');
         else scrollPrompt.classList.remove('hide');
@@ -169,9 +147,7 @@ export default function HomePage() {
       if (charSpans.length > 0) {
         charSpans.forEach((span: any, i) => {
           const randomAngle = (i * 137.5) % 360;
-          
           const distance = scrollY * 2.5; 
-          
           const x = Math.cos(randomAngle * Math.PI / 180) * distance;
           const y = Math.sin(randomAngle * Math.PI / 180) * distance;
           const rotation = scrollY * (i % 2 === 0 ? 0.2 : -0.2); 
@@ -189,92 +165,47 @@ export default function HomePage() {
           seamlessHero.style.opacity = cardFadeIn.toString();
       }
 
+      // 🟢 處理圖片拉大 (Full Screen) 同埋 Work Overview Fade In
       if (seamlessHero && aboutTrack) {
-        seamlessHero.style.maxWidth = '100vw';
-        seamlessHero.style.maxHeight = '100vh';
-
         const trackRect = aboutTrack.getBoundingClientRect();
         const totalDistance = trackRect.height - windowHeight;
         let progress = 0;
-        if (trackRect.top <= 0) progress = Math.abs(trackRect.top) / totalDistance;
+        
+        if (trackRect.top <= 0) {
+            progress = Math.abs(trackRect.top) / totalDistance;
+        }
         progress = Math.max(0, Math.min(progress, 1));
 
+        // 起始大細 (Card Size)
         const startW = isMobile ? windowWidth * 0.6 : Math.min(windowWidth * 0.25, 350);
         const startH = isMobile ? windowWidth * 0.8 : Math.min(windowWidth * 0.35, 500);
-        const midW = isMobile ? windowWidth : windowWidth * 0.4;
-        const midH = isMobile ? windowHeight : startH * 1.3;
+
+        // 🟢 目標大細 (Full Screen: 100vw x 100vh)
+        const targetW = windowWidth;
+        const targetH = windowHeight; 
+
+        // Phase 1 (0 to 0.6): 圖片拉大到 Full Screen
+        const expandP = Math.min(progress / 0.6, 1);
         
-        let currentW, currentH, radius;
-
-        if (progress < 0.15) {
-          const p1 = progress / 0.15;
-          currentW = startW + (midW - startW) * p1;
-          currentH = startH + (midH - startH) * p1;
-          radius = 16;
-          const swapP = Math.min(p1 * 2.5, 1);
-          if (imgCard) imgCard.style.opacity = (1 - swapP).toString();
-          if (imgBg) imgBg.style.opacity = swapP.toString();
-          
-          if (revealSource) revealSource.style.opacity = '0';
-          if (detailsBlock) {
-             detailsBlock.style.opacity = '0';
-             detailsBlock.style.pointerEvents = 'none';
-          }
-
-        } else {
-          const growP = (progress - 0.15) / 0.75;
-          currentW = midW + (windowWidth - midW) * growP;
-          currentH = midH + (windowHeight - midH) * growP;
-          radius = 16 * (1 - growP);
-
-          if (imgCard) imgCard.style.opacity = '0';
-          if (imgBg) imgBg.style.opacity = '1';
-
-          let layer1Opacity = 0;
-          if (progress < 0.25) {
-             layer1Opacity = (progress - 0.15) / 0.10;
-          } else if (progress < 0.55) {
-             layer1Opacity = 1;
-          } else {
-             layer1Opacity = 1 - ((progress - 0.55) / 0.10);
-          }
-          
-          if (revealSource) {
-            revealSource.style.opacity = Math.max(0, Math.min(layer1Opacity, 1)).toString();
-            revealSource.style.pointerEvents = layer1Opacity <= 0.1 ? 'none' : 'auto';
-          }
-
-          const allWords = revealSource?.querySelectorAll('.word') || [];
-          if (progress >= 0.2 && progress < 0.50) {
-            const readP = (progress - 0.2) / 0.30;
-            const activeCount = Math.floor(readP * allWords.length);
-            allWords.forEach((word, idx) => {
-              if (idx <= activeCount) word.classList.add('active');
-              else word.classList.remove('active');
-            });
-          } else if (progress >= 0.50) {
-            allWords.forEach(word => word.classList.add('active'));
-          } else {
-            allWords.forEach(word => word.classList.remove('active'));
-          }
-
-          let layer2Opacity = 0;
-          if (progress > 0.60) {
-             layer2Opacity = (progress - 0.60) / 0.15;
-          }
-          
-          if (detailsBlock) {
-              const finalOp = Math.max(0, Math.min(layer2Opacity, 1));
-              detailsBlock.style.opacity = finalOp.toString();
-              detailsBlock.style.pointerEvents = finalOp > 0.5 ? 'auto' : 'none';
-          }
-
-          if (heroOverlay) heroOverlay.style.opacity = (growP * 0.6).toString();
-        }
+        // 確保可以用盡全螢幕
+        const currentW = startW + (targetW - startW) * expandP;
+        const currentH = startH + (targetH - startH) * expandP;
+        const radius = 16 * (1 - expandP);
 
         seamlessHero.style.width = `${currentW}px`;
         seamlessHero.style.height = `${currentH}px`;
         seamlessHero.style.borderRadius = `${radius}px`;
+
+        if (heroOverlay) {
+            heroOverlay.style.opacity = (expandP * 0.6).toString();
+        }
+
+        // Phase 2 (0.6 to 1.0): 文字 Fade In
+        if (overviewFixed) {
+            const textP = Math.max(0, (progress - 0.6) / 0.4);
+            overviewFixed.style.opacity = textP.toString();
+            overviewFixed.style.transform = `translate(-50%, -50%) scale(${0.95 + 0.05 * textP})`;
+        }
       }
 
       if (contactBubble) {
@@ -345,16 +276,14 @@ export default function HomePage() {
     });
   }
 
-  // 1. 已更新的 photography version gallery data
   const portfolioData: any = {
-    'portrait': { type: 'static', src: "/images/index_portrait.jpg" },
-    'landscape': { type: 'static', src: "/images/index_landscape.jpg" },
-    'architecture': { type: 'static', src: "/images/index_architecture.jpg" },
-    'animals': { type: 'static', src: "/images/index_animals.jpg" },
-    'video': { type: 'yt', id: 'oil1eYqmIXo' } // 保留了原本的影片或你可以更換
+    'portrait': { type: 'static', src: randomCovers.portrait },
+    'landscape': { type: 'static', src: randomCovers.landscape },
+    'architecture': { type: 'static', src: randomCovers.architecture },
+    'animals': { type: 'static', src: randomCovers.animals },
+    'video': { type: 'yt', id: 'oil1eYqmIXo' } 
   };
 
-  // 2. 已更新的攝影 categories
   const categories = [
     { id: 'portrait', label: 'Portrait' },
     { id: 'landscape', label: 'Landscape' },
@@ -449,67 +378,27 @@ export default function HomePage() {
 
         .seamless-hero { 
           position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); 
-          width: 25vw; height: 35vw; max-width: 350px; max-height: 500px; 
+          width: 25vw; height: 35vw; 
           border-radius: 16px; z-index: 5; overflow: hidden; 
           box-shadow: 0 30px 60px rgba(0,0,0,0.6); 
-          opacity: 0; visibility: hidden;
-          will-change: width, height, border-radius, opacity; 
+          will-change: width, height, border-radius; 
         }
         .main-content-wrapper.loaded .seamless-hero { visibility: visible; }
 
         .hero-inner-img { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; transition: none; }
-        .img-bg { z-index: 1; opacity: 0; }
-        .img-card { z-index: 2; opacity: 1; }
         .hero-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 3; opacity: 0; pointer-events: none; }
-        .about-track { height: 300vh; position: relative; z-index: 10; margin-top: -10vh; }
-        .about-sticky-view { position: sticky; top: 0; height: 100vh; width: 100%; overflow: hidden; display: flex; align-items: center; padding: 0 5vw; box-sizing: border-box; background: transparent; pointer-events: none; }
-        .about-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 60px; width: 100%; height: 100%; align-items: center; position: relative; z-index: 2; }
-        .card-target-left { width: 100%; aspect-ratio: 0.7; position: relative; visibility: hidden; } 
-        .text-container { position: relative; height: auto; min-height: 400px; display: flex; align-items: center; justify-content: center; pointer-events: auto; }
         
-        .text-layer-1 { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 80%; text-align: center; font-size: 3.5vw; font-weight: 800; line-height: 1.2; letter-spacing: -1px; opacity: 0; z-index: 120; color: #fff; }
-        .word { display: inline-block; opacity: 0.1; transition: opacity 0.5s ease; white-space: pre-wrap; }
-        .word.active { opacity: 1; }
-        
-        .text-layer-2 { 
-            position: fixed; 
-            top: 50%; 
-            left: 50%; 
-            transform: translate(-50%, -50%); 
-            width: 80%;
-            max-width: 900px; 
-            opacity: 0; 
-            text-align: left; 
-            z-index: 121;
-            pointer-events: none;
-            display: flex;
-            flex-direction: column;
-            align-items: center; 
-        }
-        
-        .details-text { font-size: 2vw; line-height: 1.4; font-weight: 400; color: #ddd; margin-bottom: 40px; text-align: center; width: 100%; }
-        
-        .experience-list { width: 100%; max-width: 800px; border-top: 1px solid rgba(255,255,255,0.2); padding-top: 20px; }
-        
-        .experience-item { 
-            display: flex; 
-            justify-content: space-between; 
-            align-items: flex-end;
-            padding: 15px 0; 
-            border-bottom: 1px solid rgba(255,255,255,0.05); 
-        }
-        .exp-left { display: flex; flex-direction: column; gap: 4px; text-align: left; }
-        
-        .exp-date { font-size: 13px; color: #F4D03F; text-transform: uppercase; letter-spacing: 1px; }
-        .exp-role { font-size: 18px; color: #fff; font-weight: 500; }
-        .exp-company { font-size: 16px; color: #F4D03F; font-weight: 600; text-align: right; }
-        
-        .headline-accent { font-family: 'Times New Roman', serif; font-style: italic; }
+        .about-track { height: 200vh; position: relative; z-index: 10; }
 
-        .overview-section { height: 100vh; width: 100%; position: relative; z-index: 30; background-color: #050505; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; border-top: 1px solid rgba(255,255,255,0.05); }
-        .overview-title { font-size: 6vw; font-weight: 800; letter-spacing: -1px; margin-bottom: 15px; color: #fff; line-height: 1; visibility: visible; }
-        .overview-title span { display: inline-block; } 
-        .overview-subtitle { font-size: 1.1rem; color: #888; font-weight: 400; letter-spacing: 2px; text-transform: uppercase; visibility: visible; }
+        /* 🟢 固定位置嘅 Work Overview，等住 Fade In */
+        .overview-fixed { 
+            position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            width: 100vw; height: auto; 
+            z-index: 20; pointer-events: none; opacity: 0;
+            display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center;
+        }
+        .overview-title { font-size: 6vw; font-weight: 800; letter-spacing: -1px; margin-bottom: 15px; color: #fff; line-height: 1; text-shadow: 0 4px 20px rgba(0,0,0,0.5); }
+        .overview-subtitle { font-size: 1.1rem; color: #ddd; font-weight: 400; letter-spacing: 2px; text-transform: uppercase; text-shadow: 0 2px 10px rgba(0,0,0,0.5); }
         
         .gallery-wrapper { position: relative; width: 100%; z-index: 200; background: #050505; box-shadow: 0 -50px 100px rgba(0,0,0,1); }
         .hero-section { width: 100%; height: 70vh; position: relative; overflow: hidden; border-bottom: 1px solid rgba(255,255,255,0.05); display: flex; align-items: center; justify-content: center; background: #050505; cursor: pointer; }
@@ -548,8 +437,6 @@ export default function HomePage() {
         .contact-link span.label { font-size: 9px; text-transform: uppercase; color: #F4D03F; margin-right: 10px; width: 60px; font-weight: 700; }
 
         @media (max-width: 768px) {
-            .about-grid { display: block !important; }
-            .card-target-left { display: none !important; }
             .hero-category-label { opacity: 1 !important; transform: translate(-50%, -50%) !important; color: #fff; }
             .smart-nav { flex-direction: column !important; align-items: flex-start !important; width: 90% !important; max-width: 350px !important; height: 60px; overflow: hidden; transition: all 0.5s cubic-bezier(0.22, 1, 0.36, 1); min-width: 0 !important; }
             .smart-nav.mobile-active { position: fixed !important; top: 0 !important; left: 0 !important; transform: none !important; width: 100vw !important; max-width: none !important; height: 100vh !important; border-radius: 0 !important; background: #000 !important; border: none !important; padding: 30px !important; justify-content: flex-start !important; align-items: center !important; z-index: 9000 !important; }
@@ -568,18 +455,6 @@ export default function HomePage() {
                 font-size: 9px;
                 margin-bottom: 15px;
             }
-
-            .text-container { height: 100vh !important; display: flex !important; align-items: center !important; justify-content: center !important; width: 100% !important; padding: 0 20px; }
-            .text-layer-1 { font-size: 28px; width: 90%; line-height: 1.3; }
-            
-            .text-layer-2 { position: fixed !important; top: 50% !important; left: 50% !important; transform: translate(-50%, -50%) !important; width: 100% !important; display: flex !important; flex-direction: column !important; justify-content: center !important; align-items: center !important; text-align: center !important; padding: 0 20px !important; pointer-events: none; }
-            
-            .details-text { font-size: 16px; line-height: 1.5; color: #eee; text-align: center !important; margin-bottom: 20px; width: 100%; }
-            .experience-list { text-align: left; display: inline-block; margin-top: 10px; width: 100%; max-width: 100% !important; }
-            
-            .experience-item { flex-direction: column; align-items: center; text-align: center; gap: 5px; }
-            .exp-left { align-items: center; text-align: center; }
-            .exp-company { text-align: center; margin-top: 5px; }
             
             .contact-content { flex-direction: column !important; gap: 30px; }
             .contact-content.shift-layout { gap: 40px; transform: translate(-50%, -60%); }
@@ -588,6 +463,8 @@ export default function HomePage() {
             .contact-content.shift-layout .vertical-line { height: 60px !important; }
             .qr-container { transform: translateY(20px); }
             .contact-content.shift-layout .qr-container { width: 150px; transform: translateY(0); }
+            
+            .overview-title { font-size: 12vw; }
         }
       `}</style>
 
@@ -607,7 +484,6 @@ export default function HomePage() {
                     <div className="menu-line"></div>
                 </div>
             </div>
-            {/* 更新的 Navigation Links */}
             <div className="nav-links">
               <Link href="/portrait" className="nav-item">Portrait</Link>
               <Link href="/landscape" className="nav-item">Landscape</Link>
@@ -618,15 +494,14 @@ export default function HomePage() {
           </nav>
 
           <div className="seamless-hero" id="seamless-hero">
-            <img src="/images/profile.jpg" className="hero-inner-img img-card" alt="Card" />
-            <img src="/profile_bg.png" className="hero-inner-img img-bg" alt="Background" />
+            {/* 🟢 淨係保留 profile_bg.png */}
+            <img src="/profile_bg.png" className="hero-inner-img" style={{ opacity: 1 }} alt="Background" />
             <div className="hero-overlay" id="hero-overlay"></div>
           </div>
 
           <div className="intro-section" id="intro-trigger">
             <div className="intro-text" id="intro-text-container">
               <h1 className="main-title">SAM CHOW.</h1>
-              {/* 更新的 Subtitle */}
               <div className="subtitle">My Photography Gallery</div>
             </div>
             
@@ -637,62 +512,13 @@ export default function HomePage() {
             </div>
           </div>
 
-          <div className="about-track" id="about-track">
-            <div className="about-sticky-view">
-              <div className="about-grid">
-                <div className="card-target-left" id="profile-anchor"></div>
-                <div className="text-container">
-                  
-                  <div className="text-layer-1" id="text-reveal-source">
-                    I am a <span className="headline-accent">MultiMedia Designer</span>, currently working in a digital marketing agency based in Hong Kong more than 4 years.
-                  </div>
-                  
-                  <div className="text-layer-2" id="text-details-block">
-                    <div className="details-text">
-                      I am professional in <span className="headline-accent">UIUX and graphic design</span>, 2D/3D animation design, video and photography editing. I hold a Bachelor of Engineering (Honours) in Product Analysis and Engineering Design from <span className="headline-accent">The Hong Kong Polytechnic University</span>.
-                    </div>
-                    
-                    <div className="experience-list">
-                        
-                        <div className="experience-item">
-                            <div className="exp-left">
-                                <span className="exp-date">Aug 2025 - Now</span>
-                                <span className="exp-role">Senior Graphic Designer</span>
-                            </div>
-                            <div className="exp-company">RFI (Asia) Limited</div>
-                        </div>
+          {/* 🟢 空軌道，用嚟觸發 Scroll 動畫：拉大圖片 -> Fade in 文字 */}
+          <div className="about-track" id="about-track"></div>
 
-                        <div className="experience-item">
-                            <div className="exp-left">
-                                <span className="exp-date">Jan 2025 - July 2025</span>
-                                <span className="exp-role">Senior Creative & Multimedia Designer</span>
-                            </div>
-                            <div className="exp-company">Pontac Digital Limited</div>
-                        </div>
-
-                        <div className="experience-item">
-                            <div className="exp-left">
-                                <span className="exp-date">Aug 2022 - Dec 2024</span>
-                                <span className="exp-role">Creative & Multimedia Designer</span>
-                            </div>
-                            <div className="exp-company">Pontac Digital Limited</div>
-                        </div>
-
-                    </div>
-                  </div>
-
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div className="overview-section" id="overview-section">
+          {/* 🟢 固定位置嘅 Work Overview 文字框，唔會向上推，只會 Fade in */}
+          <div className="overview-fixed" id="overview-fixed">
             <div className="overview-title" id="overview-title">WORK OVERVIEW</div>
             <div className="overview-subtitle" id="overview-subtitle">Select a category to explore details</div>
-            <div className="scroll-prompt">
-              <div className="scroll-text">SCROLL</div>
-              <div className="scroll-line"></div>
-            </div>
           </div>
 
           <div className="gallery-wrapper" id="gallery-container">
