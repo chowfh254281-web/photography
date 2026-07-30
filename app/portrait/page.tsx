@@ -5,6 +5,8 @@ import Link from 'next/link';
 // Auto-read images from folder — import all .jpg in public/images/Portrait/
 const portraitImages: string[] = [
   "portrait_01",
+  "portrait_02",
+  "portrait_03",
   "7B8A9120-EAE1-4BD6-9DFE-90A5ABE7FD6C",
   "833ED149-C5DE-414A-8D4A-DFC06A7A0B59_4_5005_c",
   "DSC00127",
