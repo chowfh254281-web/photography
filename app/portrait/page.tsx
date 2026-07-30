@@ -2,19 +2,52 @@
 import React, { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 
+// Auto-read images from folder — import all .jpg in public/images/Portrait/
+const portraitImages: string[] = [
+  "portrait_01",
+  "7B8A9120-EAE1-4BD6-9DFE-90A5ABE7FD6C",
+  "833ED149-C5DE-414A-8D4A-DFC06A7A0B59_4_5005_c",
+  "DSC00127",
+  "DSC00133",
+  "DSC00338",
+  "DSC00380",
+  "DSC00608",
+  "DSC00672",
+  "DSC00709",
+  "DSC00765",
+  "DSC02991",
+  "DSC02995",
+  "DSC03011",
+  "DSC03014",
+  "DSC03064",
+  "DSC03919",
+  "DSC03982",
+  "DSC04087",
+  "DSC07994",
+  "DSC09267-2",
+  "DSC09480",
+  "DSC09482",
+  "DSC09492",
+  "DSC09669",
+]
+// Auto-split into rows of 5
+function chunkArray<T>(arr: T[], size: number): T[][] {
+  return Array.from({ length: Math.ceil(arr.length / size) }, (_, i) =>
+    arr.slice(i * size, i * size + size)
+  )
+}
+const imageRows = chunkArray(portraitImages, 5)
+
+// Dynamically create refs
+function useRowRefs(count: number) {
+  return Array.from({ length: count }, () => useRef<HTMLDivElement>(null))
+}
+
 export default function PortraitPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [isContactExpanded, setIsContactExpanded] = useState(false);
 
-  const row1Ref = useRef<HTMLDivElement>(null);
-  const row2Ref = useRef<HTMLDivElement>(null);
-  const row3Ref = useRef<HTMLDivElement>(null);
-  const row4Ref = useRef<HTMLDivElement>(null);
-  const row5Ref = useRef<HTMLDivElement>(null);
-  const row6Ref = useRef<HTMLDivElement>(null);
-  const row7Ref = useRef<HTMLDivElement>(null);
-  const row8Ref = useRef<HTMLDivElement>(null);
-  const row9Ref = useRef<HTMLDivElement>(null);
+  const rowRefs = useRowRefs(imageRows.length)
   const wrapperRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -40,15 +73,15 @@ export default function PortraitPage() {
     });
 
     const initDesktopAnimation = () => {
-      const rows = [row1Ref.current, row2Ref.current, row3Ref.current, row4Ref.current, row5Ref.current, row6Ref.current, row7Ref.current, row8Ref.current, row9Ref.current];
+      const rows = rowRefs.map(r => r.current);
       if (!rows[0]) return;
 
       let baseSpeed = 0.5; 
       let scrollVelocity = 0; 
       let skewStrength = 0;
       
-      let positions = [0, 0, 0, 0, 0, 0, 0, 0, 0]; 
-      let rowLimits = [0, 0, 0, 0, 0, 0, 0, 0, 0];
+      let positions = rows.map(() => 0);
+      let rowLimits = rows.map(() => 0);
       
       let lastScrollY = window.scrollY; 
 
@@ -223,17 +256,6 @@ export default function PortraitPage() {
 
   const toggleContact = () => setIsContactExpanded(!isContactExpanded);
 
-  // 根據截圖中的檔名重新分配的 20 張圖片 + portrait_01
-  const row1Images = ["portrait_01", "7B8A9120-EAE1-4BD6-9DFE-90A5ABE7FD6C", "833ED149-C5DE-414A-8D4A-DFC06A7A0B59_4_5005_c", "DSC00127", "DSC00133"];
-  const row2Images = ["DSC00380", "DSC00608", "DSC00672", "DSC00709", "DSC00765"];
-  const row3Images = ["DSC02991", "DSC02995", "DSC03011", "DSC03014", "DSC03064"];
-  const row4Images = ["DSC03919", "DSC03982", "DSC04087", "DSC07994", "DSC09267-2"];
-  const row5Images = ["DSC09480", "DSC09482", "DSC09492", "DSC09669", "7B8A9120-EAE1-4BD6-9DFE-90A5ABE7FD6C"];
-  const row6Images = ["DSC00127", "DSC00672", "DSC02991", "DSC03919", "DSC09480"];
-  const row7Images = ["833ED149-C5DE-414A-8D4A-DFC06A7A0B59_4_5005_c", "DSC00709", "DSC02995", "DSC03982", "DSC09482"];
-  const row8Images = ["DSC00133", "DSC00765", "DSC03011", "DSC04087", "DSC09492"];
-  const row9Images = ["DSC00338", "DSC00380", "DSC03014", "DSC07994", "DSC09669"];
-
   return (
     <>
       {/* @ts-ignore */}
@@ -349,160 +371,26 @@ export default function PortraitPage() {
       </div>
 
       <div className="kinetic-wrapper" id="kinetic-wrapper" ref={wrapperRef}>
-        
-        {/* ROW 1 */}
-        <div className="mobile-track">
-            <div className="gallery-strip" id="row-1" ref={row1Ref}>
-                {row1Images.map((img, i) => (
-                    <div key={i} className="strip-item"><img src={`/images/Portrait/${img}.jpg`} alt={img} /><div className="strip-caption">{String(i + 1).padStart(2, '0')}</div></div>
-                ))}
-                {/* SET 2 */}
-                {row1Images.map((img, i) => (
-                    <div key={`d2-${i}`} className="strip-item duplicate"><img src={`/images/Portrait/${img}.jpg`} alt={img} /></div>
-                ))}
-                {/* SET 3 */}
-                {row1Images.map((img, i) => (
-                    <div key={`d3-${i}`} className="strip-item duplicate"><img src={`/images/Portrait/${img}.jpg`} alt={img} /></div>
-                ))}
+        {imageRows.map((rowImages, rowIndex) => (
+          <div className="mobile-track" key={`row-${rowIndex}`}>
+            <div className="gallery-strip" id={`row-${rowIndex + 1}`} ref={rowRefs[rowIndex]}>
+              {rowImages.map((img, i) => (
+                <div key={i} className="strip-item">
+                  <img src={`/images/Portrait/${img}.jpg`} alt={img} />
+                  <div className="strip-caption">{String(rowIndex * 5 + i + 1).padStart(2, '0')}</div>
+                </div>
+              ))}
+              {/* SET 2 */}
+              {rowImages.map((img, i) => (
+                <div key={`d2-${i}`} className="strip-item duplicate"><img src={`/images/Portrait/${img}.jpg`} alt={img} /></div>
+              ))}
+              {/* SET 3 */}
+              {rowImages.map((img, i) => (
+                <div key={`d3-${i}`} className="strip-item duplicate"><img src={`/images/Portrait/${img}.jpg`} alt={img} /></div>
+              ))}
             </div>
-        </div>
-
-        {/* ROW 2 */}
-        <div className="mobile-track">
-            <div className="gallery-strip" id="row-2" ref={row2Ref}>
-                {row2Images.map((img, i) => (
-                    <div key={i} className="strip-item"><img src={`/images/Portrait/${img}.jpg`} alt={img} /><div className="strip-caption">{String(i + 6).padStart(2, '0')}</div></div>
-                ))}
-                {/* SET 2 */}
-                {row2Images.map((img, i) => (
-                    <div key={`d2-${i}`} className="strip-item duplicate"><img src={`/images/Portrait/${img}.jpg`} alt={img} /></div>
-                ))}
-                {/* SET 3 */}
-                {row2Images.map((img, i) => (
-                    <div key={`d3-${i}`} className="strip-item duplicate"><img src={`/images/Portrait/${img}.jpg`} alt={img} /></div>
-                ))}
-            </div>
-        </div>
-
-        {/* ROW 3 */}
-        <div className="mobile-track">
-            <div className="gallery-strip" id="row-3" ref={row3Ref}>
-                {row3Images.map((img, i) => (
-                    <div key={i} className="strip-item"><img src={`/images/Portrait/${img}.jpg`} alt={img} /><div className="strip-caption">{String(i + 11).padStart(2, '0')}</div></div>
-                ))}
-                {/* SET 2 */}
-                {row3Images.map((img, i) => (
-                    <div key={`d2-${i}`} className="strip-item duplicate"><img src={`/images/Portrait/${img}.jpg`} alt={img} /></div>
-                ))}
-                {/* SET 3 */}
-                {row3Images.map((img, i) => (
-                    <div key={`d3-${i}`} className="strip-item duplicate"><img src={`/images/Portrait/${img}.jpg`} alt={img} /></div>
-                ))}
-            </div>
-        </div>
-
-        {/* ROW 4 */}
-        <div className="mobile-track">
-            <div className="gallery-strip" id="row-4" ref={row4Ref}>
-                {row4Images.map((img, i) => (
-                    <div key={i} className="strip-item"><img src={`/images/Portrait/${img}.jpg`} alt={img} /><div className="strip-caption">{String(i + 16).padStart(2, '0')}</div></div>
-                ))}
-                {/* SET 2 */}
-                {row4Images.map((img, i) => (
-                    <div key={`d2-${i}`} className="strip-item duplicate"><img src={`/images/Portrait/${img}.jpg`} alt={img} /></div>
-                ))}
-                {/* SET 3 */}
-                {row4Images.map((img, i) => (
-                    <div key={`d3-${i}`} className="strip-item duplicate"><img src={`/images/Portrait/${img}.jpg`} alt={img} /></div>
-                ))}
-            </div>
-        </div>
-
-        {/* ROW 5 */}
-        <div className="mobile-track">
-            <div className="gallery-strip" id="row-5" ref={row5Ref}>
-                {row5Images.map((img, i) => (
-                    <div key={i} className="strip-item"><img src={`/images/Portrait/${img}.jpg`} alt={img} /><div className="strip-caption">{String(i + 21).padStart(2, '0')}</div></div>
-                ))}
-                {/* SET 2 */}
-                {row5Images.map((img, i) => (
-                    <div key={`d2-${i}`} className="strip-item duplicate"><img src={`/images/Portrait/${img}.jpg`} alt={img} /></div>
-                ))}
-                {/* SET 3 */}
-                {row5Images.map((img, i) => (
-                    <div key={`d3-${i}`} className="strip-item duplicate"><img src={`/images/Portrait/${img}.jpg`} alt={img} /></div>
-                ))}
-            </div>
-        </div>
-
-        {/* ROW 6 */}
-        <div className="mobile-track">
-            <div className="gallery-strip" id="row-6" ref={row6Ref}>
-                {row6Images.map((img, i) => (
-                    <div key={i} className="strip-item"><img src={`/images/Portrait/${img}.jpg`} alt={img} /><div className="strip-caption">{String(i + 26).padStart(2, '0')}</div></div>
-                ))}
-                {/* SET 2 */}
-                {row6Images.map((img, i) => (
-                    <div key={`d2-${i}`} className="strip-item duplicate"><img src={`/images/Portrait/${img}.jpg`} alt={img} /></div>
-                ))}
-                {/* SET 3 */}
-                {row6Images.map((img, i) => (
-                    <div key={`d3-${i}`} className="strip-item duplicate"><img src={`/images/Portrait/${img}.jpg`} alt={img} /></div>
-                ))}
-            </div>
-        </div>
-
-        {/* ROW 7 */}
-        <div className="mobile-track">
-            <div className="gallery-strip" id="row-7" ref={row7Ref}>
-                {row7Images.map((img, i) => (
-                    <div key={i} className="strip-item"><img src={`/images/Portrait/${img}.jpg`} alt={img} /><div className="strip-caption">{String(i + 31).padStart(2, '0')}</div></div>
-                ))}
-                {/* SET 2 */}
-                {row7Images.map((img, i) => (
-                    <div key={`d2-${i}`} className="strip-item duplicate"><img src={`/images/Portrait/${img}.jpg`} alt={img} /></div>
-                ))}
-                {/* SET 3 */}
-                {row7Images.map((img, i) => (
-                    <div key={`d3-${i}`} className="strip-item duplicate"><img src={`/images/Portrait/${img}.jpg`} alt={img} /></div>
-                ))}
-            </div>
-        </div>
-
-        {/* ROW 8 */}
-        <div className="mobile-track">
-            <div className="gallery-strip" id="row-8" ref={row8Ref}>
-                {row8Images.map((img, i) => (
-                    <div key={i} className="strip-item"><img src={`/images/Portrait/${img}.jpg`} alt={img} /><div className="strip-caption">{String(i + 36).padStart(2, '0')}</div></div>
-                ))}
-                {/* SET 2 */}
-                {row8Images.map((img, i) => (
-                    <div key={`d2-${i}`} className="strip-item duplicate"><img src={`/images/Portrait/${img}.jpg`} alt={img} /></div>
-                ))}
-                {/* SET 3 */}
-                {row8Images.map((img, i) => (
-                    <div key={`d3-${i}`} className="strip-item duplicate"><img src={`/images/Portrait/${img}.jpg`} alt={img} /></div>
-                ))}
-            </div>
-        </div>
-
-        {/* ROW 9 */}
-        <div className="mobile-track">
-            <div className="gallery-strip" id="row-9" ref={row9Ref}>
-                {row9Images.map((img, i) => (
-                    <div key={i} className="strip-item"><img src={`/images/Portrait/${img}.jpg`} alt={img} /><div className="strip-caption">{String(i + 41).padStart(2, '0')}</div></div>
-                ))}
-                {/* SET 2 */}
-                {row9Images.map((img, i) => (
-                    <div key={`d2-${i}`} className="strip-item duplicate"><img src={`/images/Portrait/${img}.jpg`} alt={img} /></div>
-                ))}
-                {/* SET 3 */}
-                {row9Images.map((img, i) => (
-                    <div key={`d3-${i}`} className="strip-item duplicate"><img src={`/images/Portrait/${img}.jpg`} alt={img} /></div>
-                ))}
-            </div>
-        </div>
-
+          </div>
+        ))}
       </div>
 
       <div 
