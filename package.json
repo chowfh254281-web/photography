@@ -287,7 +287,9 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "prebuild": "node scripts/generate-manifest.cjs",
+    "manifest": "node scripts/generate-manifest.cjs"
   },
   "keywords": [],
   "author": "",

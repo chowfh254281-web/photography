@@ -1,56 +1,17 @@
 'use client';
 import React, { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
+import imageManifest from '../../public/image-manifest.json';
+import { shuffleArray, chunkArray } from '../utils/gallery';
 
 // Auto-read images from folder — import all .jpg in public/images/Portrait/
-const portraitImages: string[] = [
-  "portrait_01",
-  "portrait_02",
-  "portrait_03",
-  "7B8A9120-EAE1-4BD6-9DFE-90A5ABE7FD6C",
-  "833ED149-C5DE-414A-8D4A-DFC06A7A0B59_4_5005_c",
-  "DSC00127",
-  "DSC00133",
-  "DSC00338",
-  "DSC00380",
-  "DSC00608",
-  "DSC00672",
-  "DSC00709",
-  "DSC00765",
-  "DSC02991",
-  "DSC02995",
-  "DSC03011",
-  "DSC03014",
-  "DSC03064",
-  "DSC03919",
-  "DSC03982",
-  "DSC04087",
-  "DSC07994",
-  "DSC09267-2",
-  "DSC09480",
-  "DSC09482",
-  "DSC09492",
-  "DSC09669",
-]
-// Auto-split into rows of 5
-function chunkArray<T>(arr: T[], size: number): T[][] {
-  return Array.from({ length: Math.ceil(arr.length / size) }, (_, i) =>
-    arr.slice(i * size, i * size + size)
-  )
-}
+const portraitImages: string[] = imageManifest.Portrait;
+
 const imageRows = chunkArray(shuffleArray(portraitImages), 5)
 
 // Dynamically create refs
 
-// Shuffle array on each load
-function shuffleArray<T>(arr: T[]): T[] {
-  const shuffled = [...arr]
-  for (let i = shuffled.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]]
-  }
-  return shuffled
-}
+
 function useRowRefs(count: number) {
   return Array.from({ length: count }, () => useRef<HTMLDivElement>(null))
 }

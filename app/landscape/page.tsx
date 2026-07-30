@@ -1,48 +1,17 @@
 'use client';
 import React, { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
+import imageManifest from '../../public/image-manifest.json';
+import { shuffleArray, chunkArray } from '../utils/gallery';
 
-const landscapeImages: string[] = [
-  "DSC03300",
-  "DSC04688",
-  "DSC05456",
-  "DSC05664",
-  "DSC06114",
-  "DSC07850",
-  "DSC07975",
-  "DSC07994",
-  "DSC08153",
-  "DSC08167-2",
-  "DSC08358",
-  "DSC08718",
-  "DSC08748",
-  "DSC08760",
-  "DSC08810",
-  "DSC08821",
-  "DSC09972",
-  "DSC09975",
-  "DSC09982",
-]
+const landscapeImages: string[] = imageManifest.Landscape;
 
-// Auto-split into rows of 5
-function chunkArray<T>(arr: T[], size: number): T[][] {
-  return Array.from({ length: Math.ceil(arr.length / size) }, (_, i) =>
-    arr.slice(i * size, i * size + size)
-  )
-}
+
 const imageRows = chunkArray(shuffleArray(landscapeImages), 5)
 
 // Dynamically create refs
 
-// Shuffle array on each load
-function shuffleArray<T>(arr: T[]): T[] {
-  const shuffled = [...arr]
-  for (let i = shuffled.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]]
-  }
-  return shuffled
-}
+
 function useRowRefs(count: number) {
   return Array.from({ length: count }, () => useRef<HTMLDivElement>(null))
 }

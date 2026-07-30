@@ -1,34 +1,17 @@
 'use client';
 import React, { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
+import imageManifest from '../../public/image-manifest.json';
+import { shuffleArray, chunkArray } from '../utils/gallery';
 
-const animalsImages: string[] = [
-  "DSC00327",
-  "DSC00362",
-  "DSC05863",
-  "DSC05864",
-  "DSC09528",
-]
+const animalsImages: string[] = imageManifest.Animals;
 
-// Auto-split into rows of 5
-function chunkArray<T>(arr: T[], size: number): T[][] {
-  return Array.from({ length: Math.ceil(arr.length / size) }, (_, i) =>
-    arr.slice(i * size, i * size + size)
-  )
-}
+
 const imageRows = chunkArray(shuffleArray(animalsImages), 5)
 
 // Dynamically create refs
 
-// Shuffle array on each load
-function shuffleArray<T>(arr: T[]): T[] {
-  const shuffled = [...arr]
-  for (let i = shuffled.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]]
-  }
-  return shuffled
-}
+
 function useRowRefs(count: number) {
   return Array.from({ length: count }, () => useRef<HTMLDivElement>(null))
 }
