@@ -19,6 +19,8 @@ export default function LandscapePage() {
   const [shuffleKey, setShuffleKey] = useState(0);
   useEffect(() => { setShuffleKey(Math.random()); }, []);
   const imageRows = useMemo(() => chunkArray(shuffleArray(landscapeImages), 5), [shuffleKey]);
+  const rowRefs = useRowRefs(imageRows.length)
+
 
 
   useEffect(() => { setShuffleKey(Math.random()); }, []);
@@ -361,44 +363,32 @@ export default function LandscapePage() {
         <div className="page-desc">The world is quiet here.</div>
       </div>
 
-      <div className="kinetic-wrapper" id="kinetic-wrapper" ref={wrapperRef}>
 
+      <div className="kinetic-wrapper" id="kinetic-wrapper" ref={wrapperRef}>
         {imageRows.map((rowImages, rowIndex) => (
-          <div className="mobile-track" key={`row-$${rowIndex}`}>
-            <div className="gallery-strip" id={`row-$${rowIndex + 1}`} ref={rowRefs[rowIndex]}>
+          <div className="mobile-track" key={`row-${rowIndex}`}>
+            <div className="gallery-strip" id={`row-${rowIndex + 1}`} ref={rowRefs[rowIndex]}>
               {rowImages.map((img, i) => (
                 <div key={i} className="strip-item">
-                  <img src={`/images/Landscape/$${img}.jpg`} alt={img} />
+                  <img src={`/images/Landscape/${img}.jpg`} alt={img} />
                   <div className="strip-caption">{String(rowIndex * 5 + i + 1).padStart(2, '0')}</div>
                 </div>
               ))}
               {/* SET 2 */}
               {rowImages.map((img, i) => (
-                <div key={`d2-$${i}`} className="strip-item duplicate"><img src={`/images/Landscape/$${img}.jpg`} alt={img} /></div>
+                <div key={`d2-${i}`} className="strip-item duplicate"><img src={`/images/Landscape/${img}.jpg`} alt={img} /></div>
               ))}
               {/* SET 3 */}
               {rowImages.map((img, i) => (
-                <div key={`d3-$${i}`} className="strip-item duplicate"><img src={`/images/Landscape/$${img}.jpg`} alt={img} /></div>
+                <div key={`d3-${i}`} className="strip-item duplicate"><img src={`/images/Landscape/${img}.jpg`} alt={img} /></div>
               ))}
             </div>
           </div>
         ))}
-
-                ))}
-                {/* SET 2 */}
-                {row9Images.map((img, i) => (
-                    <div key={`d2-${i}`} className="strip-item duplicate"><img src={`/images/Landscape/${img}.jpg`} alt={img} /></div>
-                ))}
-                {/* SET 3 */}
-                {row9Images.map((img, i) => (
-                    <div key={`d3-${i}`} className="strip-item duplicate"><img src={`/images/Landscape/${img}.jpg`} alt={img} /></div>
-                ))}
-            </div>
-        </div>
-
       </div>
 
       <div 
+
         className={`contact-widget ${isContactExpanded ? 'expanded' : ''}`} 
         id="contact-bubble"
         onClick={toggleContact}
