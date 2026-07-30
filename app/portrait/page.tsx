@@ -223,8 +223,8 @@ export default function PortraitPage() {
 
   const toggleContact = () => setIsContactExpanded(!isContactExpanded);
 
-  // 根據截圖中的檔名重新分配的 20 張圖片
-  const row1Images = ["7B8A9120-EAE1-4BD6-9DFE-90A5ABE7FD6C", "833ED149-C5DE-414A-8D4A-DFC06A7A0B59_4_5005_c", "DSC00127", "DSC00133", "DSC00338"];
+  // 根據截圖中的檔名重新分配的 20 張圖片 + portrait_01
+  const row1Images = ["portrait_01", "7B8A9120-EAE1-4BD6-9DFE-90A5ABE7FD6C", "833ED149-C5DE-414A-8D4A-DFC06A7A0B59_4_5005_c", "DSC00127", "DSC00133"];
   const row2Images = ["DSC00380", "DSC00608", "DSC00672", "DSC00709", "DSC00765"];
   const row3Images = ["DSC02991", "DSC02995", "DSC03011", "DSC03014", "DSC03064"];
   const row4Images = ["DSC03919", "DSC03982", "DSC04087", "DSC07994", "DSC09267-2"];
