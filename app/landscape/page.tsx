@@ -1,5 +1,5 @@
 'use client';
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState, useMemo } from 'react';
 import Link from 'next/link';
 import imageManifest from '../../public/image-manifest.json';
 import { shuffleArray, chunkArray } from '../utils/gallery';
@@ -7,7 +7,6 @@ import { shuffleArray, chunkArray } from '../utils/gallery';
 const landscapeImages: string[] = imageManifest.Landscape;
 
 
-const imageRows = chunkArray(shuffleArray(landscapeImages), 5)
 
 // Dynamically create refs
 
@@ -17,6 +16,15 @@ function useRowRefs(count: number) {
 }
 
 export default function LandscapePage() {
+  const [shuffleKey, setShuffleKey] = useState(0);
+  useEffect(() => { setShuffleKey(Math.random()); }, []);
+  const imageRows = useMemo(() => chunkArray(shuffleArray(landscapeImages), 5), [shuffleKey]);
+
+
+  useEffect(() => { setShuffleKey(Math.random()); }, []);
+
+
+
   const [isLoading, setIsLoading] = useState(true);
   const [isContactExpanded, setIsContactExpanded] = useState(false);
 
