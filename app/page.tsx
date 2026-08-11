@@ -493,8 +493,17 @@ export default function HomePage() {
           </nav>
 
           <div className="seamless-hero" id="seamless-hero">
-            {/* 🟢 淨係保留 profile_bg.png */}
-            <img src="/profile_bg.png" className="hero-inner-img" style={{ opacity: 1 }} alt="Background" />
+            {/* 🟢 SAM CHOW 片頭 — 自動播片背景 */}
+            <div className="hero-inner-video" style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', overflow: 'hidden' }}>
+              <iframe
+                src="https://www.youtube.com/embed/oil1eYqmIXo?autoplay=1&mute=1&controls=0&loop=1&playlist=oil1eYqmIXo&showinfo=0&rel=0&modestbranding=1&playsinline=1&iv_load_policy=3&disablekb=1"
+                frameBorder="0"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowFullScreen
+                title="SAM CHOW Intro"
+                style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', width: '100vw', height: '56.25vw', minWidth: '177.78vh', minHeight: '100vh', pointerEvents: 'none', border: 'none' }}
+              ></iframe>
+            </div>
             <div className="hero-overlay" id="hero-overlay"></div>
           </div>
 

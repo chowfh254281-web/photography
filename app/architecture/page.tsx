@@ -2,7 +2,7 @@
 import React, { useEffect, useRef, useState, useMemo } from 'react';
 import Link from 'next/link';
 import imageManifest from '../../public/image-manifest.json';
-import { chunkArray } from '../utils/gallery';
+import { shuffleArray, chunkArray } from '../utils/gallery';
 
 const architectureImages: string[] = imageManifest.Architecture;
 
@@ -16,7 +16,9 @@ function useRowRefs(count: number) {
 }
 
 export default function ArchitecturePage() {
-  const imageRows = useMemo(() => chunkArray(architectureImages, 5), []);
+  const [shuffleKey, setShuffleKey] = useState(0);
+  useEffect(() => { setShuffleKey(Math.random()); }, []);
+  const imageRows = useMemo(() => chunkArray(shuffleArray(architectureImages), 5), [shuffleKey]);
   const rowRefs = useRowRefs(imageRows.length)
 
 

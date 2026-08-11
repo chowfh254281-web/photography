@@ -2,7 +2,7 @@
 import React, { useEffect, useRef, useState, useMemo } from 'react';
 import Link from 'next/link';
 import imageManifest from '../../public/image-manifest.json';
-import { chunkArray } from '../utils/gallery';
+import { shuffleArray, chunkArray } from '../utils/gallery';
 
 // Auto-read images from folder — import all .jpg in public/images/Portrait/
 const portraitImages: string[] = imageManifest.Portrait;
@@ -16,7 +16,9 @@ function useRowRefs(count: number) {
 }
 
 export default function PortraitPage() {
-  const imageRows = useMemo(() => chunkArray(portraitImages, 5), []);
+  const [shuffleKey, setShuffleKey] = useState(0);
+  useEffect(() => { setShuffleKey(Math.random()); }, []);
+  const imageRows = useMemo(() => chunkArray(shuffleArray(portraitImages), 5), [shuffleKey]);
 
 
 
