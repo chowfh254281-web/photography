@@ -9,7 +9,6 @@ const architectureImages = ["DSC01436", "DSC01437", "DSC01441", "DSC03300", "DSC
 const animalImages = ["DSC00327", "DSC00362", "DSC05863", "DSC05864", "DSC09528"];
 
 export default function HomePage() {
-  const [activeYt, setActiveYt] = useState<string | null>(null); 
   const [isLoading, setIsLoading] = useState(true); 
 
   // 用 State 裝住隨機抽出嚟嘅封面路徑
@@ -528,23 +527,12 @@ export default function HomePage() {
                 <Link key={cat.id} href={`/${cat.id}`}>
                     <div 
                         className="hero-section"
-                        onMouseEnter={() => {
-                            if (data?.type === 'yt') setActiveYt(cat.id);
-                        }}
-                        onMouseLeave={() => {
-                            if (data?.type === 'yt') setActiveYt(null);
-                        }}
                     >
                     <div className="hero-img-wrapper">
                         {data?.type === 'yt' ? (
-                            <>
-                                <img src={`https://img.youtube.com/vi/${data.id}/maxresdefault.jpg`} className="hero-img static-thumb yt-thumb" style={activeYt === cat.id ? { opacity: 0 } : {}} alt="YT Cover" />
-                                <div className="yt-container">
-                                    {activeYt === cat.id && (
-                                        <iframe width="100%" height="100%" src={`https://www.youtube.com/embed/${data.id}?autoplay=1&mute=1&controls=0&modestbranding=1&rel=0&playsinline=1`} title="YouTube video player" frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', pointerEvents: 'none' }}></iframe>
-                                    )}
-                                </div>
-                            </>
+                            <div className="yt-container" style={{ width: '100%', height: '100%' }}>
+                                <iframe width="100%" height="100%" src={`https://www.youtube.com/embed/${data.id}?autoplay=1&mute=1&controls=0&loop=1&playlist=${data.id}&modestbranding=1&rel=0&playsinline=1&iv_load_policy=3&disablekb=1`} title="YouTube video player" frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', pointerEvents: 'none' }}></iframe>
+                            </div>
                         ) : data?.type === 'local_vid' ? (
                             <video 
                                 src={data.src} 
